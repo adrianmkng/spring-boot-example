@@ -73,6 +73,7 @@
     </properties>
 
     <build>
+        <finalName>spring-boot-example</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
