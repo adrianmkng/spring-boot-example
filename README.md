@@ -11,13 +11,17 @@ At the bottom of this readme I'll explain how some of it works.
 
 ## Usage ##
 
-1. Create MySQL user credentials for user `spring_boot_user` with password `spring_boot_pass`
-1. Apply the database schema mysql-vm/provisioning/roles/database/files/spring_boot_schema.sql
+1. Configure the MySQL database:
+  1. Create MySQL user credentials for user `spring_boot_user` with password `spring_boot_pass`
+  1. Apply the database schema mysql-vm/provisioning/roles/database/files/spring_boot_schema.sql
+  1. Update the spring.datasource.url in src/main/resources/application.properties to point to the mysql database
+
 1. To start the app you can:
   1. Run the com.codeng.springboot.Application in your IDE
   1. Build and run the jar from commandline
     1. `mvn clean package`
     1. `java -jar target/spring-boot-example.jar`
+
 
 ## Project Explanation ##
 
