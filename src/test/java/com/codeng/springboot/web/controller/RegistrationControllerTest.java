@@ -2,12 +2,16 @@ package com.codeng.springboot.web.controller;
 
 import com.codeng.springboot.domain.Account;
 import com.codeng.springboot.service.AccountService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +21,9 @@ import org.springframework.web.servlet.ModelAndView;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
@@ -34,7 +41,20 @@ public class RegistrationControllerTest {
     private JdbcUserDetailsManager jdbcUserDetailsManagerMock;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private AuthenticationManager authenticationManagerMock;
+
+    @Mock
+    private PasswordEncoder passwordEncoderMock;
+
+    MockHttpServletRequest request;
+
+    @Before
+    public void setup() {
+        request = new MockHttpServletRequest();
+
+        Authentication auth = mock(Authentication.class);
+        given(authenticationManagerMock.authenticate(any(Authentication.class))).willReturn(auth);
+    }
 
     @Test
     public void displayFormReturnsRegistrationPageWithForm() {
@@ -47,15 +67,18 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void submitReturnsHomePage() {
+    public void submitRedirectsToHomePage() {
         // given
         RegistrationForm form = new RegistrationForm();
+        form.setEmail("email");
+
+        given(passwordEncoderMock.encode(anyString())).willReturn("encodedPassword");
 
         // when
-        ModelAndView mav = registrationController.submit(form);
+        ModelAndView mav = registrationController.submit(form, request);
 
         // then
-        assertViewName(mav, "home");
+        assertViewName(mav, "redirect:/");
     }
 
     @Test
@@ -70,8 +93,10 @@ public class RegistrationControllerTest {
         form.setFirstname(firstname);
         form.setLastname(lastname);
 
+        given(passwordEncoderMock.encode(anyString())).willReturn("encodedPassword");
+
         // when
-        registrationController.submit(form);
+        registrationController.submit(form, request);
 
         // then
         ArgumentCaptor<Account> accountCaptor = ArgumentCaptor.forClass(Account.class);
@@ -93,10 +118,10 @@ public class RegistrationControllerTest {
         form.setEmail(email);
         form.setPassword(password);
 
-        given(passwordEncoder.encode(password)).willReturn(encodedPassword);
+        given(passwordEncoderMock.encode(password)).willReturn(encodedPassword);
 
         // when
-        registrationController.submit(form);
+        registrationController.submit(form, request);
 
         // then
         SimpleGrantedAuthority expectedAuthority = new SimpleGrantedAuthority("USER");
