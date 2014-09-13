@@ -1,0 +1,8 @@
+---
+- hosts: all
+  sudo: True
+  roles:
+    - database
+  vars:
+    db_user: spring_boot_user
+    db_password: spring_boot_pass

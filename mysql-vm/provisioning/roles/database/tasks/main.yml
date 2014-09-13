@@ -1,0 +1,26 @@
+- name: install mysql
+  apt: name={{ item }} state=present update-cache=yes
+  with_items:
+    - mysql-server
+    - python-mysqldb
+
+- name: copy mysql config
+  template: src=my.cnf dest=/etc/mysql/
+
+- service: name=mysql state=restarted
+
+- name: create mysql user account
+  mysql_user: name={{ db_user }} password={{ db_password }} host=192.168.10.1 priv=*.*:ALL state=present
+
+- name: copy user mysql config
+  template: src=.my.cnf dest=/home/vagrant/
+
+- name: create spring boot database
+  mysql_db: name=spring_boot_example state=present
+
+- name: upload database schema
+  copy: src=spring_boot_example_schema.sql dest=/home/vagrant/
+
+- name: import table schema database
+  mysql_db: name=spring_boot_example state=import target=/home/vagrant/spring_boot_schema.sql
+

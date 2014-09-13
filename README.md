@@ -7,12 +7,12 @@ At the bottom of this readme I'll explain how some of it works.
 ## Dependencies ##
 
 - Maven
-- MySQL
+- MySQL (or run the MySQL vm using vagrant and ansible)
 
 ## Usage ##
 
 1. Create MySQL user credentials for user `spring_boot_user` with password `spring_boot_pass`
-1. Apply the database schema src/main/resources/spring_security_schema.sql
+1. Apply the database schema mysql-vm/provisioning/roles/database/files/spring_boot_schema.sql
 1. To start the app you can:
   1. Run the com.codeng.springboot.Application in your IDE
   1. Build and run the jar from commandline
