@@ -65,15 +65,20 @@ public class RegistrationController {
         newAccount.setLastname(form.getLastname());
         accountService.createAccount(newAccount);
 
-        GrantedAuthority userAuthority = new SimpleGrantedAuthority("USER");
-        List<GrantedAuthority> authorities = Arrays.asList(userAuthority);
         String encodedPassword = passwordEncoder.encode(form.getPassword());
-        User userDetails = new User(email, encodedPassword, authorities);
-        userDetailsService.createUser(userDetails);
 
+        createSpringUser(email, encodedPassword);
         autoLogin(request, email, encodedPassword);
 
         return new ModelAndView("redirect:/");
+    }
+
+    private String createSpringUser(String email, String password) {
+        GrantedAuthority userAuthority = new SimpleGrantedAuthority("USER");
+        List<GrantedAuthority> authorities = Arrays.asList(userAuthority);
+        User userDetails = new User(email, password, authorities);
+        userDetailsService.createUser(userDetails);
+        return password;
     }
 
     private void autoLogin(HttpServletRequest request, String username, String password) {

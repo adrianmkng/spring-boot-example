@@ -12,6 +12,9 @@
 - name: create mysql user account
   mysql_user: name={{ db_user }} password={{ db_password }} host=192.168.10.1 priv=*.*:ALL state=present
 
+- name: create mysql user account
+  mysql_user: name={{ db_user }} password={{ db_password }} host=localhost priv=*.*:ALL state=present
+
 - name: copy user mysql config
   template: src=.my.cnf dest=/home/vagrant/
 
