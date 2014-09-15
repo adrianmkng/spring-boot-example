@@ -19,7 +19,7 @@
   mysql_db: name=spring_boot_example state=present
 
 - name: upload database schema
-  copy: src=spring_boot_example_schema.sql dest=/home/vagrant/
+  copy: src=spring_boot_schema.sql dest=/home/vagrant/
 
 - name: import table schema database
   mysql_db: name=spring_boot_example state=import target=/home/vagrant/spring_boot_schema.sql
